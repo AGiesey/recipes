@@ -40,7 +40,7 @@ export const AddRecipe = () =>
   }
 
   return (
-    <>
+    <div className="container">
       <div className="row mb-5">
         <div className="col">
           <h1>Add Recipe</h1>
@@ -69,6 +69,6 @@ export const AddRecipe = () =>
           <button type="button" className="btn btn-primary" onClick={onSubmit}>Save</button>
         </div>
       </div>
-    </>
+    </div>
   )
 }
