@@ -1,38 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AddRecipe } from './components/AddRecipe';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { MyRecipes } from './components/MyRecipes';
+import { RecipeList } from './components/RecipeList';
 import { Recipe } from './components/Recipe';
+import { auth } from './firebase';
+import { MainLayout } from './components/MainLayout';
 
 function App() {
+
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if(!auth.currentUser) {
+      auth.signInAnonymously()
+        .then(userCredential => {
+          setLoading(false);
+        })
+    }
+  }, [])
+
   return (
     <Router>
-      <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-        <h1>Adam's Kitchen</h1>
+      <nav className="navbar navbar-dark fixed-top bg-dark">
+        <h2 className="nav-brand text-white-50">Adam's Kitchen</h2>
+        <ul className="nav justify-content-end">
+          <li className="nav-item">
+            <Link to="/" className="nav-link text-white" aria-disabled={loading}>Add Recipe</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/recipes" className="nav-link text-white" aria-disabled={loading}>Recipe List</Link>
+          </li>
+        </ul>
       </nav>
       <div className="container-fluid">
         <div className="row">
-          <nav className="col-md-2 d-none d-md-block bg-light sidebar">
-            <div className="sidebar-sticky">
-              <ul className="nav flex-column">
-                <li className="nav-item">
-                  <Link to="/">Add Recipe</Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/recipes">My Recipes</Link>
-                </li>
-              </ul>
-            </div>
-          </nav>
           <Switch>
             <Route exact path="/">
-              <AddRecipe />
+              <MainLayout>
+                <AddRecipe />
+              </MainLayout>
             </Route>
             <Route path="/recipes">
-              <MyRecipes />
+              <MainLayout>
+                <RecipeList />
+              </MainLayout>
             </Route>
             <Route path="/recipes/:recipe-id"> {/* todo: add route params */}
-              <Recipe  />
+              <MainLayout>
+                <Recipe  />
+              </MainLayout>
             </Route>
           </Switch>
         </div>
