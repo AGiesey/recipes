@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { database } from '../firebase';
+import { database, auth } from '../firebase';
 
 interface Recipe {
+  createdBy: string;
   title: string;
   ingredients: string;
   directions: string;
@@ -27,7 +28,12 @@ export const AddRecipe = () =>
   }
 
   const onSubmit = () => {
+    if (!title || !ingredients || !directions) return;
+
+    console.log(auth.currentUser);
+
     let recipe = {
+      createdBy: auth.currentUser?.uid,
       title: title,
       ingredients: ingredients,
       directions: directions,
